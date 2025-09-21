@@ -1,6 +1,4 @@
 const _url = "ftp://admin:s3cr3t@files.company.org:21/documents/reports/2025?type=pdf&lang=en#summary";
-
-// p@ss:w%rd --> p%40s%3Asw%25rd  (@->%40, :->%3A, %->%25)
 const invalidUrl = "123";
 let result = {
     "scheme": "https",
