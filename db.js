@@ -13,13 +13,10 @@ const dbpool = mysql2.createPool(connectionData).promise();
 
 async function main() {
     try {
-        // Получаем все категории
         const [rows] = await dbpool.query("SELECT id, name, parent_id FROM categories ORDER BY parent_id, id");
 
-        // Строим дерево
         const tree = buildTree(rows, null);
 
-        // Печатаем дерево
         printTree(tree);
 
     } catch (err) {
@@ -29,7 +26,6 @@ async function main() {
     }
 }
 
-// 🔹 Построение дерева из списка
 function buildTree(items, parentId = null) {
     return items
         .filter(item => item.parent_id === parentId)
@@ -39,7 +35,6 @@ function buildTree(items, parentId = null) {
         }));
 }
 
-// 🔹 Красивый вывод в консоль
 function printTree(nodes, prefix = "") {
     for (const node of nodes) {
         console.log(prefix + "📦 " + node.name);
