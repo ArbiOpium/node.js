@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Категорії</title>
+  <style>
+    ul { list-style-type: none; padding-left: 20px; }
+    .collapsed > ul { display: none; }
+    .group { cursor: pointer; user-select: none; }
+    .arrow::before {
+      content: "▶ "; /* стрілочка */
+    }
+    .expanded > .group .arrow::before {
+      content: "▼ ";
+    }
+  </style>
+</head>
+<body>
+  <h2>Категорії</h2>
+  <div id="tree">Завантаження...</div>
+
+  <script>
+    async function loadCategories() {
+      const res = await fetch("http://localhost:3000/categories");
+      const tree = await res.json();
+      renderTree(tree, document.getElementById("tree"));
+    }
+
+    function createTreeNode(node) {
+      const li = document.createElement("li");
+      if (node.children.length > 0) {
+        li.classList.add("collapsed");
+        const div = document.createElement("div");
+        div.classList.add("group");
+        div.innerHTML = `<span class="arrow"></span>${node.name}`;
+        div.addEventListener("click", () => {
+          li.classList.toggle("collapsed");
+          li.classList.toggle("expanded");
+        });
+        li.appendChild(div);
+
+        const ul = document.createElement("ul");
+        node.children.forEach(child => {
+          ul.appendChild(createTreeNode(child));
+        });
+        li.appendChild(ul);
+      } else {
+        li.textContent = "• " + node.name;
+      }
+      return li;
+    }
+
+    function renderTree(data, container) {
+      container.innerHTML = "";
+      const ul = document.createElement("ul");
+      data.forEach(node => {
+        ul.appendChild(createTreeNode(node));
+      });
+      container.appendChild(ul);
+    }
+
+    loadCategories();
+  </script>
+</body>
+</html>
